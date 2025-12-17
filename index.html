@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>IoT Workshop Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-top: 5px solid #007bff; }
+        h1 { text-align: center; color: #333; }
+        .temp { font-size: 1.5em; font-weight: bold; color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <h1>📡 Live IoT Workshop Monitor</h1>
+    <div id="status" style="text-align: center; margin-bottom: 20px;">Conectando ao broker...</div>
+    
+    <div class="grid" id="dashboard">
+        </div>
+
+    <script>
+        // CONFIGURAÇÕES DO SEU HIVEMQ CLOUD
+        const HOST = "ccd011facc5549afaf27640219f3175d.s1.eu.hivemq.cloud"; // Substitua pelo seu Cluster URL
+        const PORT = 8884; // Porta WebSocket com TLS
+        const USER = "teste"; 
+        const PASS = "1234567890Bruno";
+        const TOPIC = "workshop/#"; // O '#' ouve todos os sub-tópicos
+
+        const client = new Paho.MQTT.Client("wss://" + HOST + ":" + PORT + "/mqtt", "web_client_" + Math.random());
+
+        client.onConnectionLost = (obj) => { 
+            document.getElementById('status').innerHTML = "❌ Conexão Perdida: " + obj.errorMessage;
+        };
+
+        client.onMessageArrived = (message) => {
+            console.log("Chegou: " + message.payloadString);
+            try {
+                const data = JSON.parse(message.payloadString);
+                updateCard(data);
+            } catch (e) {
+                console.error("Erro ao processar JSON. Certifique-se que o envio é um JSON válido.");
+            }
+        };
+
+        const options = {
+            useSSL: true,
+            userName: USER,
+            password: PASS,
+            onSuccess: () => {
+                document.getElementById('status').innerHTML = "✅ Conectado ao Broker!";
+                client.subscribe(TOPIC);
+            },
+            onFailure: (err) => {
+                document.getElementById('status').innerHTML = "❌ Erro na conexão: " + err.errorMessage;
+            }
+        };
+
+        function updateCard(data) {
+            const id = "card-" + data.autor.replace(/\s+/g, '');
+            let card = document.getElementById(id);
+            
+            if (!card) {
+                card = document.createElement('div');
+                card.id = id;
+                card.className = 'card';
+                document.getElementById('dashboard').appendChild(card);
+            }
+
+            card.innerHTML = `
+                <h3>👤 ${data.autor}</h3>
+                <p>Temperatura: <span class="temp">${data.temp}°C</span></p>
+                <p>Umidade: ${data.umid}%</p>
+                <small>Última atualização: ${new Date().toLocaleTimeString()}</small>
+            `;
+        }
+
+        client.connect(options);
+    </script>
+</body>
+</html>
