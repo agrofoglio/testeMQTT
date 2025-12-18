@@ -69,9 +69,9 @@
             }
 
             card.innerHTML = `
-                <h3>👤 ${data.autor}</h3>
-                <p>Temperatura: <span class="temp">${data.temp}°C</span></p>
-                <p>Umidade: ${data.umid}%</p>
+                <h3>👤 Monitor 1</h3>
+                <p>Temperatura: <span class="temp">${data.fc}°C</span></p>
+                <p>Umidade: ${data.monitor1/fc}%</p>
                 <small>Última atualização: ${new Date().toLocaleTimeString()}</small>
             `;
         }
