@@ -23,10 +23,10 @@
     <script>
         // CONFIGURAÇÕES DO SEU HIVEMQ CLOUD
         const HOST = "ccd011facc5549afaf27640219f3175d.s1.eu.hivemq.cloud"; // Substitua pelo seu Cluster URL
-        const PORT = 8884; // Porta WebSocket com TLS
+        const PORT = 8883; // Porta WebSocket com TLS
         const USER = "teste"; 
         const PASS = "1234567890Bruno";
-        const TOPIC = "monitor1/fc"; // O '#' ouve todos os sub-tópicos
+        const TOPIC = "#"; // O '#' ouve todos os sub-tópicos
 
         const client = new Paho.MQTT.Client("wss://" + HOST + ":" + PORT + "/mqtt", "web_client_" + Math.random());
 
