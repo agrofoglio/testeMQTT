@@ -26,7 +26,7 @@
         const PORT = 8884; // Porta WebSocket com TLS
         const USER = "teste"; 
         const PASS = "1234567890Bruno";
-        const TOPIC = "workshop/#"; // O '#' ouve todos os sub-tópicos
+        const TOPIC = "monitor1/fc"; // O '#' ouve todos os sub-tópicos
 
         const client = new Paho.MQTT.Client("wss://" + HOST + ":" + PORT + "/mqtt", "web_client_" + Math.random());
 
